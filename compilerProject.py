@@ -9,24 +9,21 @@ from sys import argv
 
 
 def myparser(grammar, inputfile):
-    parser = Lark(grammar, parser="lalr", start='start')
-    print(parser)
-    data = parser.parse(inputfile)
-    output = ""
-    for token in data.children:
-        print(token)
-        # if token.type in Ids.keys():
-        #     output += Ids[token.type] + "    "
-        # output += token + "\n"
-    # print(output)
-    # file = open("outputs/output.txt", "w+")
-    # file.write(output)
 
+    try:
+        parser = Lark(grammar, parser="lalr", start='start')
+        data = parser.parse(inputfile)
+        output = "OK"
+    except:
+        output = "Syntax Error"
 
-
+    print(output)
+    file = open("outputs/output.txt", "w+")
+    file.write(output)
+    file.close()
 
 def main(argv):
-    f = open("python/tests/t01.in", "r")
+    f = open("python/tests/t08.in", "r")
     f2 = open("grammar2.lark", "r")
     inputfile = f.read()
     grammar = f2.read()

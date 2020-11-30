@@ -1,50 +1,41 @@
-?start:(DIGIT|HEX_DIGITS|T_HEX|T_DOUBLELITERAL|T_TRUE_BOOLEAN|T_FALSE_BOOLEAN|READ_INTEGER|READ_LINE|DTOI|ITOD|BTOI|ITOB|NEW_ARRAY|BOOLEANCONSTANT|PROGRAM|DECL|VARIABLEDECL|VARIABLE|RETURNSTMT|TYPE|FUNCTIONDECL|FORMALS|CLASSDECL|FORSTMT|FIELD|ACCESSMODE|INTERFACEDECL|PROTOTYPE|STMTBLOCK|STMT|IFSTMT|WHILESTMT|BREAKSTMT|CONTINUESTMT|PRINTSTMT|EXPR|LVALUE|CALL|ACTUALS|CONSTANT|IDENT|SL_COMMENT|ML_COMMENT)*
+start : (decl)+
+
+
+decl : variabledecl | functiondecl | classdecl | interfacedecl
+variabledecl : variable ";"
+variable : type IDENT
+type : "int" | "double" | "bool" | "string" | IDENT | type "[]"
+functiondecl : type IDENT "("formals")" stmtblock | "void" IDENT "("formals")" stmtblock
+formals : variable (","variable)* | 
+classdecl : "class" IDENT ("extends" IDENT)? ("implements" IDENT (","IDENT)*)?  "{"(field)*"}" 
+field : accessmode variabledecl | accessmode functiondecl
+accessmode : "private" | "protected" | "public" |
+interfacedecl : "interface" IDENT "{" prototype* "}"
+prototype : type IDENT(formals)";" | "void" IDENT(formals)
+stmtblock : "{" variabledecl* stmt* "}"
+stmt : expr? ";" | ifstmt | whilestmt | forstmt | breakstmt | continuestmt | returnstmt | printstmt | stmtblock
+ifstmt : "if" "(" expr ")" stmt ("else" stmt| )
+whilestmt : "while" "(" expr ")" stmt
+forstmt : "for" "(" expr? ";" expr ";" expr? ")" stmt
+returnstmt : "return" (expr)? ";"
+breakstmt : "break" ";"
+continuestmt : "continue" ";"
+printstmt : "print" "(" ((expr)|((expr",")*)) ")" ";"
+expr : lvalue "=" expr | constant | lvalue | "this" | call | "(" expr ")" | expr "+" expr | expr "−" expr | expr "*" expr | expr "/" expr | expr "%" expr | "−" expr | expr "<" expr | expr "<=" expr | expr ">" expr | expr ">=" expr | expr "==" expr | expr "!="  expr | expr "&&" expr | expr "||" expr | "!"expr | "ReadInteger" "()" | "ReadLine()" | "new" IDENT  | "NewArray" "(" expr "," type ")" | "itod" "("expr")" | "dtoi" "("expr")" | "itob" "("expr")" |"btoi" "("expr")"
+lvalue : IDENT | expr "." IDENT | expr "[" expr "]"
+call : IDENT "("actuals")" | expr "." IDENT "("actuals")"
+actuals : ((expr)|((expr",")*)) | 
+constant : (T_INT|T_HEX) | T_DOUBLELITERAL | ("true"|"false") | STRINGCONSTANT | "null"
+
+
 
 
 DIGIT: /[0-9]+/
-HEX_DIGITS : /[0-9a-fA_F]/
+HEX_DIGITS :  /[0-9a-fA_F]/
 T_HEX : (("0x"|"0X")HEX_DIGITS+)
 T_INT : DIGIT+DIGIT*
 T_DOUBLELITERAL : DIGIT+"."+DIGIT*
-T_TRUE_BOOLEAN : "true"
-T_FALSE_BOOLEAN : "false"
-READ_INTEGER : "ReadInteger"
-READ_LINE : "ReadLine"
-DTOI: "dtoi"
-ITOD: "itod"
-BTOI: "btoi"
-ITOB: "itob"
-NEW_ARRAY : "NewArray"
-BOOLEANCONSTANT : T_TRUE_BOOLEAN | T_FALSE_BOOLEAN
-
-
-PROGRAM : DECL+ 
-DECL : VARIABLEDECL | FUNCTIONDECL | CLASSDECL | INTERFACEDECL
-VARIABLEDECL : VARIABLE
-VARIABLE : TYPE IDENT
-RETURNSTMT : "return" EXPR* ";"
-TYPE : "int" | "double" | "bool" | "string" | IDENT | Type [ ]
-FUNCTIONDECL : TYPE IDENT (FORMALS) STMTBLOCK | "void" IDENT (FORMALS) STMTBLOCK
-FORMALS : VARIABLE+ | 
-CLASSDECL : "class" IDENT ("extends" IDENT)* (implements IDENT)+ "{" FIELD* "}"
-FORSTMT : "for" "(" EXPR* ";" EXPR ";" EXPR* ")" STMT
-FIELD : ACCESSMODE VARIABLEDECL | ACCESSMODE FUNCTIONDECL
-ACCESSMODE : "private" | "protected" | "public" |
-INTERFACEDECL : "interface" IDENT "{" PROTOTYPE* "}"
-PROTOTYPE : TYPE IDENT(FORMALS)";" | "void" IDENT(FORMALS)
-STMTBLOCK : "{" VARIABLEDECL* STMT* "}"
-STMT : EXPR* ";" | IFSTMT | WHILESTMT | FORSTMT | BREAKSTMT | CONTINUESTMT | RETURNSTMT | PRINTSTMT | STMTBLOCK
-IFSTMT : "if" "(" EXPR ")" STMT ("else" STMT| )
-WHILESTMT : "while" "(" EXPR ")" STMT
-BREAKSTMT : "break" ";"
-CONTINUESTMT : "continue" ";"
-PRINTSTMT : "print" "(" ((EXPR)|((EXPR",")*)) ")" ";"
-EXPR : LVALUE "=" EXPR | CONSTANT | LVALUE | "this" | CALL | "(" EXPR ")" | EXPR "+" EXPR | EXPR "−" EXPR | EXPR "*" EXPR | EXPR "/" EXPR | EXPR "%" EXPR | "−" EXPR | EXPR "<" EXPR | EXPR "<=" EXPR | EXPR ">" EXPR | EXPR ">=" EXPR | EXPR "==" EXPR | EXPR "!="  EXPR | EXPR "&&" EXPR | EXPR "||" EXPR | "!"EXPR | READ_INTEGER"()" | readLine"()" | "new" IDENT  | NEWARRAY"(" EXPR "," TYPE ")" | ITOD"("EXPR")" | DTOI"("EXPR")" | ITOB"("EXPR")" | BTOI"("EXPR")"
-LVALUE : IDENT | EXPR "." IDENT | EXPR"["EXPR"]"
-CALL : IDENT "("ACTUALS")" | EXPR "." IDENT "("ACTUALS")"
-ACTUALS : ((EXPR)|((EXPR",")*)) | 
-CONSTANT : INTCONSTANT | DOUBLECONSTANT | BOOLCONSTANT | STRINGCONSTANT | "null"
-
+STRINGCONSTANT : "\"" /[a-zA-Z]+[a-zA-Z0-9]/  "\""
 IDENT : CNAME
 SL_COMMENT : "//"/[^\n]*/
 ML_COMMENT : /\/\*[\s\S]*?\*\//
