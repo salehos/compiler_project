@@ -23,7 +23,7 @@ def myparser(grammar, inputfile):
     file.close()
 
 def main(argv):
-    f = open("python/tests/t08.in", "r")
+    f = open("python/tests/t10.in", "r")
     f2 = open("grammar2.lark", "r")
     inputfile = f.read()
     grammar = f2.read()

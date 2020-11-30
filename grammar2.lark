@@ -22,7 +22,7 @@ breakstmt : "break" ";"
 continuestmt : "continue" ";"
 printstmt : "print" "(" ((expr)|((expr",")*)) ")" ";"
 expr : lvalue "=" expr | constant | lvalue | "this" | call | "(" expr ")" | expr "+" expr | expr "−" expr | expr "*" expr | expr "/" expr | expr "%" expr | "−" expr | expr "<" expr | expr "<=" expr | expr ">" expr | expr ">=" expr | expr "==" expr | expr "!="  expr | expr "&&" expr | expr "||" expr | "!"expr | "ReadInteger" "()" | "ReadLine()" | "new" IDENT  | "NewArray" "(" expr "," type ")" | "itod" "("expr")" | "dtoi" "("expr")" | "itob" "("expr")" |"btoi" "("expr")"
-lvalue : IDENT | expr "." IDENT | expr "[" expr "]"
+lvalue : IDENT | expr "." IDENT | expr "[" expr "]" 
 call : IDENT "("actuals")" | expr "." IDENT "("actuals")"
 actuals : ((expr)|((expr",")*)) | 
 constant : (T_INT|T_HEX) | T_DOUBLELITERAL | ("true"|"false") | STRINGCONSTANT | "null"
@@ -34,7 +34,7 @@ DIGIT: /[0-9]+/
 HEX_DIGITS :  /[0-9a-fA_F]/
 T_HEX : (("0x"|"0X")HEX_DIGITS+)
 T_INT : DIGIT+DIGIT*
-T_DOUBLELITERAL : DIGIT+"."+DIGIT*
+T_DOUBLELITERAL :/(\d)+\.(\d)*((E|e)(\+|-)?(\d)+)?/
 STRINGCONSTANT : "\"" /[a-zA-Z]+[a-zA-Z0-9]/  "\""
 IDENT : CNAME
 SL_COMMENT : "//"/[^\n]*/
